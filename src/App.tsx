@@ -5,7 +5,6 @@ import { useEffect, useLayoutEffect, useState } from "react"
 import { type DataSource, getDataSource } from "./data"
 import { FieldMapping } from "./FieldMapping"
 import { SelectDataSource } from "./SelectDataSource"
-import { SelectBoard } from "./SelectBoard" // Import the new component
 
 interface AppProps {
     collection: ManagedCollection
@@ -37,6 +36,10 @@ export function App({ collection, previousDataSourceId, previousSlugFieldId }: A
 
         const abortController = new AbortController()
 
+        // We don't have the access token here, so we can't load the data.
+        // The user will have to re-authenticate.
+        // A better solution would be to store the access token in the plugin's data store.
+        // But for now, we will just show the select data source screen.
         if (!accessToken) {
             setIsLoadingDataSource(false)
             return
@@ -47,14 +50,18 @@ export function App({ collection, previousDataSourceId, previousSlugFieldId }: A
             .then(setDataSource)
             .catch(error => {
                 if (abortController.signal.aborted) return
+
                 console.error(error)
                 framer.notify(
                     `Error loading previously configured data source “${previousDataSourceId}”. Check the logs for more details.`,
-                    { variant: "error" }
+                    {
+                        variant: "error",
+                    }
                 )
             })
             .finally(() => {
                 if (abortController.signal.aborted) return
+
                 setIsLoadingDataSource(false)
             })
 
@@ -69,28 +76,23 @@ export function App({ collection, previousDataSourceId, previousSlugFieldId }: A
         )
     }
 
-    if (dataSource) {
+    if (!dataSource) {
         return (
-            <FieldMapping
-                collection={collection}
-                dataSource={dataSource}
-                initialSlugFieldId={previousSlugFieldId}
-                accessToken={accessToken!}
-            />
-        )
-    }
-
-    if (accessToken) {
-        return (
-            <SelectBoard
-                accessToken={accessToken}
-                onSelectDataSource={(dataSource, token) => {
+            <SelectDataSource
+                onSelectDataSource={(dataSource, accessToken) => {
                     setDataSource(dataSource)
-                    setAccessToken(token)
+                    setAccessToken(accessToken)
                 }}
             />
         )
     }
 
-    return <SelectDataSource onAuthenticated={setAccessToken} />
+    return (
+        <FieldMapping
+            collection={collection}
+            dataSource={dataSource}
+            initialSlugFieldId={previousSlugFieldId}
+            accessToken={accessToken}
+        />
+    )
 }
