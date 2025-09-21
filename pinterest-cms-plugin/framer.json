@@ -1,0 +1,9 @@
+{
+  "id": "73f5f3",
+  "name": "Pinterest Cms Plugin",
+  "modes": [
+    "configureManagedCollection",
+    "syncManagedCollection"
+  ],
+  "icon": "/icon.svg"
+}
