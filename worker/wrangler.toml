@@ -7,4 +7,4 @@ compatibility_date = "2024-04-03"
 # and add its id to this file.
 [[kv_namespaces]]
 binding = "PINTEREST_OAUTH_KV"
-id = "<your_kv_namespace_id>"
+id = "356fc26fdd404b6ea3a5f7d50c129fff"
