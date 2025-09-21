@@ -2,7 +2,7 @@ import { framer } from "framer-plugin"
 import { useState } from "react"
 
 const isLocal = () => window.location.hostname.includes("localhost")
-const AUTH_BACKEND = isLocal() ? "http://localhost:8787" : "https://pinterest-oauth-worker.michaelsoluwakayode.workers.dev"
+const AUTH_BACKEND = isLocal() ? "http://localhost:8787" : "https://pin.pilabase.com"
 
 interface AuthenticateProps {
     onAuthenticated: (accessToken: string) => void
